@@ -1,0 +1,23 @@
+div.sidebar-about p.lead{
+    font-family: "Pixel square", "PT Sans", Helvetica, Arial, sans-serif;;
+}
+div.sidebar-nav{
+    text-align: center;
+}
+a.sidebar-nav-item{
+    width:22%
+}
+a.sidebar-nav-item i.fa{
+    font-size:1.2em;
+}
+.sidebar-about img.profile-picture{
+    max-width: 10rem;
+    margin-bottom: 0.8rem;
+}
+h1 a{
+    font-family: "Pixel square", "PT Sans", Helvetica, Arial, sans-serif;;
+}
+table.commento-markdown-help pre{
+    padding: 0rem;
+    background-color: transparent;
+}
