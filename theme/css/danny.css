@@ -21,3 +21,29 @@ table.commento-markdown-help pre{
     padding: 0rem;
     background-color: transparent;
 }
+.tetradic1{
+    color: #b5826a;
+}
+.tetradic2{
+    color: #b5a76a;
+}
+.tetradic3{
+    color: #9b6ab5;
+}
+.hidden{
+    display: none;
+}
+div.youtube-container{
+    position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	height: 0;
+    border: #333 solid 5px;
+    margin-bottom: 3em;
+}
+iframe.youtube{
+    position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}

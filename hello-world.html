@@ -59,19 +59,33 @@
 </div>		<div class="content container">
 <div class="post">
 	<h1 class="post-title">Hello World</h1>
-	<span class="post-date">Mon 15 July 2019</span>
-	<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+	<p>
+		<span>Written by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span>and published on </span>
+		<span>Mon 15 July 2019</span>
+	</p>
+	
 	
 	<div>
-		<p>
+		<p class="tetradic2">
 			This blog post also comes in video form. The content should be the same so you're free to watch or read as you wish.
 		</p>
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/MizPu-dTPQU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+	<div class="youtube-container">
+		<iframe class="youtube" src="https://www.youtube.com/embed/MizPu-dTPQU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	</div>
 	<p>This is the first post of this blog. Required for testing.</p>
 	<div id="commento"></div>
 	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
 </div>
+
+<script src="https://programmingpixels.com/theme/scripts/commento_check.js"></script>
 		</div>
 	</body>
 </html>
