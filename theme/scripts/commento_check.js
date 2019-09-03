@@ -3,7 +3,7 @@ const sleep = (milliseconds) => {
   }
   
   
-  sleep(5000).then(() => {
+  sleep(3000).then(() => {
     check_commento_loaded();
   });
 
