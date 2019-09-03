@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/danny.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">How to consistently scale a pygame application to full screen</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Tue 03 September 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>This post may be helpful to anyone making a full screen pygame application who wants to keep a consistent aspect ratio across different monitor resolutions.</p></p>
+	</div>
+	
+	<h2>What's the Problem?</h2>
+<p>While working on a game for the recent <a href="https://itch.io/jam/lowrezjam-2019">lowrez game jam</a> I noticed pygame exhibiting some strange behaviour. My game ran correctly in window mode but when I switched to full screen the aspect ratio wasn't right. My square game window hadn't maintained it's original aspect ratio at full screen (which would have created black bars at the side of a square game window), nor had it been fully stretched to take up all of my widescreen monitor. It had done something in-between, creating black bars at the sides of my game that were an incorrect size.</p>
+<p>To help investigate the problem, I wrote a very basic python script that uses pygame to draw a square in the top left area of the screen. I found that 16:9 monitors seemed to display a range of resolutions correctly while monitors with other aspect ratios (mine is 16:10) displayed rectangles instead of squares. (This was tested across windows and linux mint and several completely different monitors and machines running a mix of AMD and NVIDIA graphics cards).</p>
+<p><img alt="monitor image" src="https://programmingpixels.com/images/fscrerror/samsung1.jpg">
+<img alt="2nd monitor image" src="https://programmingpixels.com/images/fscrerror/curved.jpeg"></p>
+<p>These images are the result of the following function.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fullscreen</span><span class="p">(</span><span class="n">game_height</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sets full screen display mode and draws a square in the top left &quot;&quot;&quot;</span>
+    <span class="c1"># game_height = game_width in a square</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="n">game_height</span><span class="p">,</span> <span class="n">game_height</span><span class="p">),</span> <span class="n">FULLSCREEN</span><span class="p">)</span>
+    <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>  <span class="c1"># fill white</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span>
+        <span class="n">screen</span><span class="p">,</span>  <span class="c1"># surface</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># rgb (black)</span>
+        <span class="n">Rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>  <span class="c1"># (x, y, width, height)</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+    <span class="n">wait_for_keypress</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Generally I've found that pygame's default full-screen option doesn't reliably maintain your game's aspect ratio and may do something unpredictable (we should have squares in the images above and instead we have rectangles).
+The first monitor detects a 1280x1024 resolution which isn't native but should be supported by the monitor (pygame.display.list_modes() reports that 1280x1024 is a supported mode and windows 10 appears correctly on this monitor if set to that resolution).</p>
+<p>There are other limitations to using pygame's default full-screen behavior, as it seems limited in its ability to stretch resolutions up to a factor of 2. If you make a game and want to support the popular laptop screen resolution 1366x768 then you won't want to make your game greater than 768 pixels high. But you can't scale that all the way to 4k (2160 pixels high) using pygame's default full-screen functionality.</p>
+<p>When we distribute a game, we want to know our application's aspect ratio is going to be correctly maintained for a range of different set-ups and displays so we need a method to produce a consistent game experience for all our players.</p>
+<h2>Solution</h2>
+<p>One solution is to use pygame's <em><a href="https://www.pygame.org/docs/ref/transform.html#pygame.transform.scale">scale</a></em> method to scale our game surface up to the largest square that will fit on the monitor and then blit this surface to the correct location on a native resolution screen object.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fullscreen_fix</span><span class="p">(</span><span class="n">game_height</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sets full screen display mode and draws a square in the top left &quot;&quot;&quot;</span>
+    <span class="c1"># Set the display mode to the current screen resolution</span>
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">FULLSCREEN</span><span class="p">)</span>
+
+    <span class="c1"># create a square pygame surface</span>
+    <span class="n">game_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">game_height</span><span class="p">,</span> <span class="n">game_height</span><span class="p">))</span>
+    <span class="n">game_surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+
+    <span class="c1"># draw a square in the top left</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">game_surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+
+    <span class="c1"># make the largest square surface that will fit on the screen</span>
+    <span class="n">screen_width</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+    <span class="n">screen_height</span> <span class="o">=</span> <span class="n">screen</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+    <span class="n">smallest_side</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span><span class="p">)</span>
+    <span class="n">screen_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">smallest_side</span><span class="p">,</span> <span class="n">smallest_side</span><span class="p">))</span>
+
+    <span class="c1"># scale the game surface up to the larger surface</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span>
+        <span class="n">game_surface</span><span class="p">,</span>  <span class="c1"># surface to be scaled</span>
+        <span class="p">(</span><span class="n">smallest_side</span><span class="p">,</span> <span class="n">smallest_side</span><span class="p">),</span>  <span class="c1"># scale up to (width, height)</span>
+        <span class="n">screen_surface</span><span class="p">)</span>  <span class="c1"># surface that game_surface will be scaled onto</span>
+
+    <span class="c1"># place the larger surface in the centre of the screen</span>
+    <span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span>
+        <span class="n">screen_surface</span><span class="p">,</span>
+        <span class="p">((</span><span class="n">screen_width</span> <span class="o">-</span> <span class="n">smallest_side</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># x pos</span>
+        <span class="p">(</span><span class="n">screen_height</span> <span class="o">-</span> <span class="n">smallest_side</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># y pos</span>
+
+    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+    <span class="n">wait_for_keypress</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="working monitor image" src="https://programmingpixels.com/images/fscrerror/samsung3.jpg"></p>
+<p>Now we've maintained our game resolution and aspect ratio (our code draws squares and our monitor is showing squares).</p>
+<p>This method should work for all resolutions and screen orientations (landscape or portrait). Testing this with a few games I've written, the scaling takes around 2ms each frame on my modest machine (in a 60fps game, you have 16.67ms per frame).</p>
+<p>The code snippets used in this post are available in full at <a href="https://gist.github.com/programmingpixels/3be3f2858f88fa2a2095c29b67e7c895">this gist</a>.</p>
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="https://programmingpixels.com/theme/scripts/commento_check.js"></script>
+		</div>
+	</body>
+</html>

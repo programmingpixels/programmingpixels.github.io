@@ -57,13 +57,16 @@
 </div>		<div class="content container">
 <div class="post">
 	<h1 class="post-title">Pixel perfect art across multiple game resolutions</h1>
-	<p>
-		<span>Written by </span>
+	<p class="post-date">
+		<span>Published by </span>
 		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
-		<span>and published on </span>
-		<span>Fri 26 July 2019</span>
+		<span> on </span>
+		<span>Fri 26 July 2019.</span>
 	</p>
 	
+	<div>
+		<p class="summary"><p>A general guide to keeping sprites pixel perfect</p></p>
+	</div>
 	
 	<div>
 		<p class="tetradic2">
@@ -74,7 +77,7 @@
 		<iframe class="youtube" src="https://www.youtube.com/embed/MizPu-dTPQU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	</div>
 	<p>How do we get pixel perfect sprites into games without stretching, cropping or otherwise deforming them?
-This is a tricky topic and there are a few solutions across the internet. In this blog post I want to introduce another versatile method that should be implementable in a number of different frameworks. I've implemented the solution in a small amount of <a href="https://www.python.org/">python</a> using <a href="https://www.pygame.org">pygame</a> which should be digestable to anyone with some programming experience (it will be well explained as we build up a solution).</p>
+This is a tricky topic and there are a few solutions across the internet. In this blog post I want to introduce another versatile method that should be implementable in a number of different frameworks. I've implemented the solution in a small amount of <a href="https://www.python.org/">python</a> using <a href="https://www.pygame.org">pygame</a> which should be digestable to anyone with some programming experience (it will be well explained as we build up a solution). I've also used the logic programming language <a href="https://en.wikipedia.org/wiki/Prolog">prolog</a> to help define and solve our problem, but again, this will be easy for most people to understand </p>
 <h2>The problem</h2>
 <p>The problem with using sprites on a range of resolutions is well explained in this stackoverflow discussion <a href="https://stackoverflow.com/questions/35785291/getting-giggly-effect-when-slowly-moving-a-sprite">https://stackoverflow.com/questions/35785291/getting-giggly-effect-when-slowly-moving-a-sprite</a> as well as on this blog <a href="https://weareludicrous.com/blog/2018/pixel-sharp-graphics-at-multiple-screen-resolutions/">https://weareludicrous.com/blog/2018/pixel-sharp-graphics-at-multiple-screen-resolutions/</a> but basically you spend hours making your pixel art perfect, every pixel's colour is meticulously selected but when you release your game and it's stretched and skewed across different resolutions (so many resolutions <a href="https://en.wikipedia.org/wiki/4K_resolution#/media/File:Vector_Video_Standards.svg">https://en.wikipedia.org/wiki/4K_resolution#/media/File:Vector_Video_Standards.svg</a>).</p>
 <p>Avoiding stretching pixel and boarders</p>
@@ -86,8 +89,22 @@ This is a tricky topic and there are a few solutions across the internet. In thi
 <h2>A basic platformer to help illustrate the problem</h2>
 <p>I've written an extremely basic platformer.
 In this game</p>
+<p>Knight sprite used here:
+https://goglilol.itch.io/cute-knight</p>
+<p>Insert images of end result early on so the reader can understand where we're heading.</p>
+<h2>Prolog - preparing for our game</h2>
+<p>In theory, it's possible to check every possible resolution that meets certain criteria, from 1024x768 to 38.... but practically, even trying to make a list in prolog that holds every resolution (several million) was giving me stack overflows.</p>
+<h2>Prolog implementing the display changes</h2>
+<p>Requires pyswip and swi prolog installed for part of the demo. But for actual release it wouldn't be necessary because because following paragraph.</p>
+<p>But actually, now that we've precalculated a lot of stuff. We can implement a pure python way of calculating our zoom. It's not always going to be practical to require swi-prolog be installed on our target machines</p>
+<h2>Further work</h2>
+<p>One of the constraints is that our sprites for all resolutions were easily scaled (integer multiples) of some base size so that we could scale them without any extra effort. It might be that you're willing provide two different base scales to better cover the resolutions and tighten the difference between minimum and maximum viewable areas (game view).
+All our sprites were square shaped, obviously in a real game you might want variously shaped and sized sprites.
+Static cameras aren't that common in games but the approach should be adaptable to a moving camera (maybe I'll do this in a future blog post).
+Ultra wide could be accomodated, really just by adding a lot of empty area but this is just one more complication- there's certainly nothing stopping this approach being applied to ultra wide.
+Ways to anchor the screen, I've linked the camera to the screen centre but there are good reasons why other modes might be good to use.</p>
 <h2>Conclusion</h2>
-<p>This is one solution to a common problem in game development. There may be others that fit your requirements better but this general solution is quite versatile and should be implementable in many game engines.</p>
+<p>This is one solution to a common problem in game development. There may be others that fit your requirements better but this general solution is quite versatile and should be implementable in many game engines. I've really done the bare minimum required to demonstrate this method and as well as the further work suggestions I've made, there are probably dozens of other things that could be added to the implementation.</p>
 	<div id="commento"></div>
 	<script src="https://cdn.commento.io/js/commento.js"></script>
 	<div id="commento-failed" class="hidden tetradic1">

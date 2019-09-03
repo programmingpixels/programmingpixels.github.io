@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="./theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="./theme/css/danny.css" />
+		<link rel="stylesheet" href="./theme/css/poole.css" />
+		<link rel="stylesheet" href="./theme/css/hyde.css" />
+		<link rel="stylesheet" href="./theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="./theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">How to safely and consistently scale your Pygame application to full screen</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="./pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Tue 03 September 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>This post may be helpful to anyone hoping to make a full screen pygame application with a consistent aspect ratio across multiple monitor resolutions.</p></p>
+	</div>
+	
+	<p>While working on a game for the recent <a href="https://itch.io/jam/lowrezjam-2019">lowrez game jam</a> I noticed pygame exhibiting some strange behaviour. My game ran correctly in mode but when I switched to full screen the aspect ratio wasn't right. My game hadn't been fully stretched to take up all of my widescreen monitor, nor maintained it's original aspect ratio (which would have created black bars at the side of a square game window)- it had done something in between.</p>
+<p>To help investigate the problem, I created a very basic python script that uses pygame to draw a square in the top left area of the screen. I found that 16:9 monitors seemed to display a range of resolutions correctly while monitors with other aspect ratios (mine is 16:10) displayed rectangles instead of squares. (This was tested across windows and linux mint and two completely different machines, one running an AMD graphics card and another NVIDIA).</p>
+<p>Our failing setups:</p>
+<p>[Photo of mine and Ricky's distorted squares.]</p>
+<p>[show script]</p>
+<p>My monitor detects a 1280x1024 signal (for a 1024 square).
+My monitor detects a ????x1080 signal (for a 1080 square, and this seems to work ok).
+In the above examples, both machines have tried to full screen a 1024 hav Even though these resolutions do not match the native resolutions of these monitors, they should be supported well enough to draw the square correctly. If I set windows to a 1280x1024 resolution then in paint's squares (shift + rectangle tool) come out as perfect squares.</p>
+<p>This is disappointing because we want to know our application's aspect ratio is going to be correctly maintained for a range of different setups and displays. One solution is to use pygame's <em>[scale]</em>(https://www.pygame.org/docs/ref/transform.html#pygame.transform.scale) method to scale our game surface up to match the resolution height of the monitor and then blit this surface to the correct location on a native resolution screen object.</p>
+<p>[show script]</p>
+<p>[Photo of result]</p>
+<p>This method is versatile and should work for all resolutions and screen orientations (landscape or portrait). In my timing tests in a few games I've written, this scaling takes around 2ms each frame on my modest machine (in a 60fps game, you have 16.67ms per frame). Pygame's fullscreen default stretching that we were using first also seems to be limited in its ability to stretch resolutions, maybe up to a factor of 2. It means I needed to use this scale function for my low res game (to scale 64x64 up to modern screen resolutions) and also, if you make a game and want to support the popular laptop screen resolution (1366x900 ??) then you won't want to make your game greater than 900 pixels high. But you can't scale that all the way to 4k using pygame's default fullscreen functionality.</p>
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="./theme/scripts/commento_check.js"></script>
+		</div>
+	</body>
+</html>
