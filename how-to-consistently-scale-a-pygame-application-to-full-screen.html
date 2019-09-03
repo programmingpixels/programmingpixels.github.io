@@ -23,13 +23,24 @@
 
 		<!-- RSS -->
 		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	
+	<!-- MailerLite Universal -->
+	<script>
+	(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+	var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+	f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+	var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+	_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+	
+	var ml_account = ml('accounts', '1598442', 'z5g7y5g5j2', 'load');
+	</script>
+	<!-- End MailerLite Universal -->
 	</head>
 
 	<body class="theme-base-0d">
 <div class="sidebar">
 	<div class="container sidebar-sticky">
 		<div class="sidebar-about">
-
 			<h1>
 				<a href="/">
 					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
@@ -133,6 +144,12 @@ The first monitor detects a 1280x1024 resolution which isn't native but should b
 <p>Now we've maintained our game resolution and aspect ratio (our code draws squares and our monitor is showing squares).</p>
 <p>This method should work for all resolutions and screen orientations (landscape or portrait). Testing this with a few games I've written, the scaling takes around 2ms each frame on my modest machine (in a 60fps game, you have 16.67ms per frame).</p>
 <p>The code snippets used in this post are available in full at <a href="https://gist.github.com/programmingpixels/3be3f2858f88fa2a2095c29b67e7c895">this gist</a>.</p>
+
+	<div class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
+	</div>
+	<div>
+		
+	</div>
 	<div id="commento"></div>
 	<script src="https://cdn.commento.io/js/commento.js"></script>
 	<div id="commento-failed" class="hidden tetradic1">
