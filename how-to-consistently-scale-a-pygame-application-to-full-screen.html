@@ -79,6 +79,7 @@
 		<p class="summary"><p>This post may be helpful to anyone making a full screen pygame application who wants to keep a consistent aspect ratio across different monitor resolutions.</p></p>
 	</div>
 	
+	<div>
 	<h2>What's the Problem?</h2>
 <p>While working on a game for the recent <a href="https://itch.io/jam/lowrezjam-2019">lowrez game jam</a> I noticed pygame exhibiting some strange behaviour. My game ran correctly in window mode but when I switched to full screen the aspect ratio wasn't right. My square game window hadn't maintained it's original aspect ratio at full screen (which would have created black bars at the side of a square game window), nor had it been fully stretched to take up all of my widescreen monitor. It had done something in-between, creating black bars at the sides of my game that were an incorrect size.</p>
 <p>To help investigate the problem, I wrote a very basic python script that uses pygame to draw a square in the top left area of the screen. I found that 16:9 monitors seemed to display a range of resolutions correctly while monitors with other aspect ratios (mine is 16:10) displayed rectangles instead of squares. (This was tested across windows and linux mint and several completely different monitors and machines running a mix of AMD and NVIDIA graphics cards).</p>
@@ -144,6 +145,8 @@ The first monitor detects a 1280x1024 resolution which isn't native but should b
 <p>Now we've maintained our game resolution and aspect ratio (our code draws squares and our monitor is showing squares).</p>
 <p>This method should work for all resolutions and screen orientations (landscape or portrait). Testing this with a few games I've written, the scaling takes around 2ms each frame on my modest machine (in a 60fps game, you have 16.67ms per frame).</p>
 <p>The code snippets used in this post are available in full at <a href="https://gist.github.com/programmingpixels/3be3f2858f88fa2a2095c29b67e7c895">this gist</a>.</p>
+	<br />
+	</div>
 
 	<div id="mailerlite" class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
 	</div>
@@ -153,9 +156,9 @@ The first monitor detects a 1280x1024 resolution which isn't native but should b
 			We will only ever send you updates of our latest blog posts and your data will never be shared with anyone, ever.
 		</p>
 	</div>
-
 	<div>
 	</div>
+	<br />
 
 	<div id="commento"></div>
 	<script src="https://cdn.commento.io/js/commento.js"></script>
@@ -166,8 +169,7 @@ The first monitor detects a 1280x1024 resolution which isn't native but should b
 	</div>
 </div>
 
-<script src="https://programmingpixels.com/theme/scripts/commento_check.js"></script>
-<script src="https://programmingpixels.com/theme/scripts/mailerlite_check.js"></script>
+<script src="https://programmingpixels.com/theme/scripts/external_element_checks.js"></script>
 		</div>
 	</body>
 </html>

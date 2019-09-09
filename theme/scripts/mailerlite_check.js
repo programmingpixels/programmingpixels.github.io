@@ -1,3 +1,5 @@
+// NOT IN USE
+
 const sleep2 = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
@@ -15,3 +17,5 @@ function check_mailerlite_loaded() {
         mailerliteFailed.classList.remove("hidden");
     }
 }
+
+// NOT IN USE
