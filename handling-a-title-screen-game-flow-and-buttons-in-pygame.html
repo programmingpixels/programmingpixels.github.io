@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/danny.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	
+	<!-- MailerLite Universal -->
+	<script>
+	(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+	var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+	f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+	var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+	_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+	
+	var ml_account = ml('accounts', '1598442', 'z5g7y5g5j2', 'load');
+	</script>
+	<!-- End MailerLite Universal -->
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">Handling a title screen, game flow and buttons in pygame.</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Thu 12 September 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>We build a basic menu system to navigate between different stages of a game.</p></p>
+	</div>
+	
+	<div>
+	<h2>Pygame has no built in UI components</h2>
+<p>Without buttons it can be difficult to handle title screens, game menus and the general flow of the game from one stage to another. There are a few libraries for creating ui elements that are designed to work with pygame but many of them are abandoned and if you do find one in development you'll have to conform to its conventions. Fortunately it's not difficult to make your own buttons and menu system, and if you do you'll retain complete control over the way your game runs.</p>
+<p>There's a lot of really fancy menu design in games now, menu items can be buttons with backgrounds, text that changes shape and/ or colour when selected etc. We're not going to go over every possible effect that a UI element could have but instead we're going to focus on getting something basic working that can be easily built on so we can also cover how these UI elements can fit neatly into our game's logic.</p>
+<p>We're going for simple interactive elements that are text only and increase in size a little when selected. All steps shown in this tutorial are included in this <a href="https://gist.github.com/programmingpixels/27b7f8f59ec53b401183c68f4be1634b">gist</a>.</p>
+<h2>Step 1: Responsive text</h2>
+<p>We'll start by making text that responds when the mouse is over it. Here's what we should have at the end of this step.</p>
+<p><img alt="example1" src="https://programmingpixels.com/images/gameui/example1.gif"></p>
+<p>We'll need some imports, the rgb values of few colours for convenience and a small helper function that renders text onto a surface. (The convert_alpha method is a small optimisation that enables the surface to be more quickly blitted to the screen).</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">pygame.freetype</span>
+<span class="kn">from</span> <span class="nn">pygame.sprite</span> <span class="kn">import</span> <span class="n">Sprite</span>
+<span class="kn">from</span> <span class="nn">pygame.rect</span> <span class="kn">import</span> <span class="n">Rect</span>
+
+<span class="n">BLUE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">106</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">181</span><span class="p">)</span>
+<span class="n">WHITE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_surface_with_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">text_rgb</span><span class="p">,</span> <span class="n">bg_rgb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns surface with text written on &quot;&quot;&quot;</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">freetype</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s2">&quot;Courier&quot;</span><span class="p">,</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">surface</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">fgcolor</span><span class="o">=</span><span class="n">text_rgb</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="n">bg_rgb</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">surface</span><span class="o">.</span><span class="n">convert_alpha</span><span class="p">()</span>
+</pre></div>
+
+
+<p>For our UI element we're going to create a subclass of pygame's <a href="https://www.pygame.org/docs/ref/sprite.html">Sprite</a> class, this means we can render them with pygame's sprite render classes if we want to but we'll also add a draw method in case we don't (we won't use them until the very end). In the init method we'll create images for the button when the mouse is over and when it isn't.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UIElement</span><span class="p">(</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; An user interface element that can be added to a surface &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_position</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">bg_rgb</span><span class="p">,</span> <span class="n">text_rgb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            center_position - tuple (x, y)</span>
+<span class="sd">            text - string of text to write</span>
+<span class="sd">            font_size - int</span>
+<span class="sd">            bg_rgb (background colour) - tuple (r, g, b)</span>
+<span class="sd">            text_rgb (text colour) - tuple (r, g, b)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c1"># indicates if the mouse is over the element</span>
+
+        <span class="c1"># create the default image</span>
+        <span class="n">default_image</span> <span class="o">=</span> <span class="n">create_surface_with_text</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">,</span> <span class="n">text_rgb</span><span class="o">=</span><span class="n">text_rgb</span><span class="p">,</span> <span class="n">bg_rgb</span><span class="o">=</span><span class="n">bg_rgb</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create the image that shows when mouse is over the element</span>
+        <span class="n">highlighted_image</span> <span class="o">=</span> <span class="n">create_surface_with_text</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">,</span> <span class="n">text_rgb</span><span class="o">=</span><span class="n">text_rgb</span><span class="p">,</span> <span class="n">bg_rgb</span><span class="o">=</span><span class="n">bg_rgb</span>
+        <span class="p">)</span>
+
+        <span class="c1"># add both images and their rects to lists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_image</span><span class="p">,</span> <span class="n">highlighted_image</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rects</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">default_image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center_position</span><span class="p">),</span>
+            <span class="n">highlighted_image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center_position</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="c1"># calls the init method of the parent sprite class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</pre></div>
+
+
+<p>We'll add a few properties to the class that change values depending on whether mouse_over is true or not.</p>
+<div class="highlight"><pre><span></span><span class="c1"># properties that vary the image and its rect when the mouse is over the element</span>
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">rects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<p>To finish off the class add <em>update</em> and <em>draw</em> methods to the class. All the <em>update</em> method does for now is sets the mouse_over value depending on whether the user's cursor is over the text or not.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouse_pos</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">mouse_pos</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Draws element onto a surface &quot;&quot;&quot;</span>
+    <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now to a button and game loop where we update the ui element with the current mouse position.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+
+    <span class="c1"># create a ui element</span>
+    <span class="n">uielement</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Hello World&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># main loop</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">pass</span>
+        <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
+
+        <span class="n">uielement</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">())</span>
+        <span class="n">uielement</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+
+
+<span class="c1"># call main when the script is run</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+
+<p>That's step 1 complete. If running your script doesn't give you the same result as the gif shown at the start of this step then compare your script to this <a href="https://gist.github.com/programmingpixels/27b7f8f59ec53b401183c68f4be1634b#file-step1-py">gist</a>.</p>
+<h2>Step 2: Handling clicks</h2>
+<p>In step 1 the text increases in size when you mouse over to indicate that it's interactive but clicking it doesn't actually doing anything yet.</p>
+<p>In this step we're going to make our buttons responsive to mouse clicks and create a quit button that closes the application. Here's what we should have at the end of this step.</p>
+<p><img alt="example2" src="https://programmingpixels.com/images/gameui/example2.gif"></p>
+<p><em>A short aside: Some people advocate for sending a function as an argument to a button (that is a function name without brackets) so that on a click event, the button can call the function. That's ok for short running functions (say for instance that you just want to add some score every time you click on the button) but you don't want to have a button calling a function that changes the level, or goes back to the main menu because the button will remain in the heap since you are still in one of its functions. As you press more and more buttons your application will have to retain all button instances in memory and store other objects that were loaded in the pursuit of loading more buttons (level instances etc.).</em></p>
+<p>I prefer to use enums to move between game states, so we will pass in enum values when the button is created and check for state changes in a little loop.</p>
+<p>Don't worry if that's not very clear yet, it should become clear as we work through this step.</p>
+<p>Add Enum to our list of imports at the top of the file.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+</pre></div>
+
+
+<p>Add an action argument to the init method of the UIElement, the method declaration should look like this</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_position</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">bg_rgb</span><span class="p">,</span> <span class="n">text_rgb</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</pre></div>
+
+
+<p>At the bottom of the __init__ method, assign action to an instance variable</p>
+<div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">action</span>
+</pre></div>
+
+
+<p>We need to change the <em>update</em> method of the UIElement to check for mouse clicks, we'll do that by passing in a value for mouse_up when we call the button's <em>update</em> method. When the mouse is clicked on an element, the element returns the value stored in it's action variable.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouse_pos</span><span class="p">,</span> <span class="n">mouse_up</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Updates the element&#39;s appearance depending on the mouse position</span>
+<span class="sd">        and returns the button&#39;s action if clicked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">mouse_pos</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="n">mouse_up</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">action</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mouse_over</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+
+
+<p>Create and enum class with one possible action: Quit.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GameState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">QUIT</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+
+
+<p>We need to change the <em>main</em> function to add a quit button. In the main loop the pygame event queue is checked to see if the primary mouse button has been clicked (we're using the mouse up event which fires after the mouse button has been pushed down and then released 'up'). The mouse position and the mouse_up status are then passed into the update function of the button. If the button has been clicked, the update function will return a <em>GameState</em> enum value, since there's only one possible <em>GameState</em> that could be returned (quit) we stop the application.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+
+    <span class="n">quit_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Quit&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">QUIT</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># main loop</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
+
+        <span class="n">ui_action</span> <span class="o">=</span> <span class="n">quit_btn</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(),</span> <span class="n">mouse_up</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ui_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">quit_btn</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+
+
+<p>That's step 2 complete. If running your script doesn't give you the same result as the gif shown at the start of this step then compare your script to this <a href="https://gist.github.com/programmingpixels/27b7f8f59ec53b401183c68f4be1634b#file-step2-py">gist</a>.</p>
+<h2>Step 3: Add to the title screen and make a level</h2>
+<p>Our UIElement class is finished and working but our game still only has one screen and all you can do is quit. We're going to expand our example so we have a start button on the title screen as well as a quit and a return to main menu option in a level.</p>
+<p><img alt="example3" src="https://programmingpixels.com/images/gameui/example3.gif"></p>
+<p>Start by adding all the options we'll need to the <em>GameState</em> enum.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GameState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">QUIT</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">TITLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NEWGAME</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<p>We're going to change our <em>main</em> function quite a lot, we are no longer going to load button objects in it. Instead it'll be used as sort of game state handling function, loading different functions that are called based on the current game_state. When buttons are pushed in the title_screen or the play_level functions, a new <em>GameState</em> value is returned.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">GameState</span><span class="o">.</span><span class="n">TITLE</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">GameState</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
+            <span class="n">game_state</span> <span class="o">=</span> <span class="n">title_screen</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">GameState</span><span class="o">.</span><span class="n">NEWGAME</span><span class="p">:</span>
+            <span class="n">game_state</span> <span class="o">=</span> <span class="n">play_level</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">GameState</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+            <span class="k">return</span>
+</pre></div>
+
+
+<p>Now we need to create the title_screen function, much of this code should be familiar as it's very similar to what we used to have in <em>main</em>. We're going to make two buttons which update during every game loop. One has a <em>NEWGAME</em> action and the other <em>QUIT</em>. The game loop ends when one of the buttons is clicked and the action value from the button is returned to the <em>main</em> function.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">title_screen</span><span class="p">(</span><span class="n">screen</span><span class="p">):</span>
+    <span class="n">start_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">NEWGAME</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">quit_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Quit&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">QUIT</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">buttons</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_btn</span><span class="p">,</span> <span class="n">quit_btn</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">button</span> <span class="ow">in</span> <span class="n">buttons</span><span class="p">:</span>
+            <span class="n">ui_action</span> <span class="o">=</span> <span class="n">button</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(),</span> <span class="n">mouse_up</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ui_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ui_action</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Similarly, we're going to make a play_level function that will act like the first level of our game. The level will have one button to return to our main menu and nothing else.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">play_level</span><span class="p">(</span><span class="n">screen</span><span class="p">):</span>
+    <span class="n">return_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">570</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Return to main menu&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">TITLE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
+
+        <span class="n">ui_action</span> <span class="o">=</span> <span class="n">return_btn</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(),</span> <span class="n">mouse_up</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ui_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ui_action</span>
+        <span class="n">return_btn</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+
+
+<p>That's step 3 complete. If running your script doesn't give you the same result as the gif shown at the start of this step then compare your script to this <a href="https://gist.github.com/programmingpixels/27b7f8f59ec53b401183c68f4be1634b#file-step3-py">gist</a>.</p>
+<h2>Step 4: Using sprite renderers, storing player attributes and tidying up</h2>
+<p>Our code is starting to look useful but in a real game we might want to keep track of things like which level the player is on, how many lives they have or what their score is. We'll add that in now as well as replace our manual <em>draw</em> calls with a sprite renderer that will handle the drawing of all our buttons. Here's what we should have at the end of this step.</p>
+<p><img alt="example4" src="https://programmingpixels.com/images/gameui/example4.gif"></p>
+<p>First we need add one of pygame's sprite renderers to our list of imports.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pygame.sprite</span> <span class="kn">import</span> <span class="n">RenderUpdates</span>
+</pre></div>
+
+
+<p>Then we'll add a data class to store some player attributes.</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Stores information about a player &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lives</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">current_level</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lives</span> <span class="o">=</span> <span class="n">lives</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_level</span> <span class="o">=</span> <span class="n">current_level</span>
+</pre></div>
+
+
+<p>In the <em>main</em> function we want to create a player instance before we start a new game and add a game state check for when we need to move to the next level.</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">GameState</span><span class="o">.</span><span class="n">NEWGAME</span><span class="p">:</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">()</span>  <span class="c1"># new line</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">play_level</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+
+<span class="c1"># new block</span>
+<span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">GameState</span><span class="o">.</span><span class="n">NEXT_LEVEL</span><span class="p">:</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">current_level</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">play_level</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span>
+</pre></div>
+
+
+<p>To help tidy up our title_screen and play_level functions make a game_loop function. This function manages the game loop until one of the buttons is pressed, at which point it returns the button's action value.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">game_loop</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">buttons</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Handles game loop until an action is return by a button in the</span>
+<span class="sd">    buttons sprite renderer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mouse_up</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">button</span> <span class="ow">in</span> <span class="n">buttons</span><span class="p">:</span>
+            <span class="n">ui_action</span> <span class="o">=</span> <span class="n">button</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(),</span> <span class="n">mouse_up</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ui_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ui_action</span>
+
+        <span class="n">buttons</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</pre></div>
+
+
+<p>This function could be extended later to draw more objects but at the moment we only have buttons but it allows us to simplify some of our other functions. The title_screen function still has two buttons but now they're added to a RenderUpdates collection and game_loop is called with the result returned.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">title_screen</span><span class="p">(</span><span class="n">screen</span><span class="p">):</span>
+    <span class="n">start_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">NEWGAME</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">quit_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Quit&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">QUIT</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">buttons</span> <span class="o">=</span> <span class="n">RenderUpdates</span><span class="p">(</span><span class="n">start_btn</span><span class="p">,</span> <span class="n">quit_btn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">game_loop</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">buttons</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Add a player argument to the play_level function so that player data (current_level etc.) can be passed in. Add a new button to the play_level function and give it the action of next level. After button creation we just need to return the result of game_loop like in the title_screen.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">play_level</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+    <span class="n">return_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">570</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Return to main menu&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">TITLE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">nextlevel_btn</span> <span class="o">=</span> <span class="n">UIElement</span><span class="p">(</span>
+        <span class="n">center_position</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">bg_rgb</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span>
+        <span class="n">text_rgb</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;Next level ({player.current_level + 1})&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">GameState</span><span class="o">.</span><span class="n">NEXT_LEVEL</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">buttons</span> <span class="o">=</span> <span class="n">RenderUpdates</span><span class="p">(</span><span class="n">return_btn</span><span class="p">,</span> <span class="n">nextlevel_btn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">game_loop</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">buttons</span><span class="p">)</span>
+</pre></div>
+
+
+<p>That's the final step complete! If running your script doesn't give you the same result as the gif shown at the start of this step then compare your script to this <a href="https://gist.github.com/programmingpixels/27b7f8f59ec53b401183c68f4be1634b#file-step4-py">gist</a>.</p>
+	<br />
+	</div>
+
+	<div id="mailerlite" class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
+	</div>
+	<div id="mailerlite-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our newsletter signup form.
+			If you would like to signup you can send an email to danny@programmingpixels.com.
+			We will only ever send you updates of our latest blog posts and your data will never be shared with anyone, ever.
+		</p>
+	</div>
+	<div>
+	</div>
+	<br />
+
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="https://programmingpixels.com/theme/scripts/external_element_checks.js"></script>
+		</div>
+	</body>
+</html>
