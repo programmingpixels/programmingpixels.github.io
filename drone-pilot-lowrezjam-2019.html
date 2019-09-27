@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/danny.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	
+	<!-- MailerLite Universal -->
+	<script>
+	(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+	var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+	f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+	var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+	_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+	
+	var ml_account = ml('accounts', '1598442', 'z5g7y5g5j2', 'load');
+	</script>
+	<!-- End MailerLite Universal -->
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">Drone pilot - Lowrezjam 2019</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Fri 27 September 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>A short overview of a game made for the 2019 low rez jam and what I learned.</p></p>
+	</div>
+	<div>
+		<p class="tetradic2">
+				In the video below I do a quick playthrough the game's 8 levels.
+		</p>
+	</div>
+	<div class="youtube-container">
+		<iframe class="youtube" src="https://www.youtube.com/embed/KKIauAqVh04" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+	<div>
+	<p>The <a href="https://itch.io/jam/lowrezjam-2019">2019 lowrez game jam</a> took place in august this year. Unfortunately I was busy at the time and even though the jam lasted for eighteen days I could only use the last three!</p>
+<p>If you want to try the game yourself you can download it for free from <a href="https://programmingpixels.itch.io/drone-pilot-lowrezjam">itch</a>.</p>
+<h3>Rules and Restrictions</h3>
+<p>Themes are provided but they're not mandatory, you can make whatever kind of game you like but it cannot have a higher resolution than 64x64 (it can be stretched to fit modern screens). There were a few ideas that I thought were doable in the time I had left but had to be thrown out once I realised that they just wouldn't be playable at that kind of resolution.</p>
+<h3>Basic Gameplay</h3>
+<p>Blue and green platforms are both safe to land on but to complete the level you must land your drone on the green platform. When a platform turns red it indicates that your approach velocity to it is too fast, if you land at this speed you'll crash and fail the level. The orange warning light in the bottom right also indicates that your approach to the target (green) platform is too fast.</p>
+<p><img alt="safe landing" src="https://programmingpixels.com/images/lowrezjam/safelanding.gif" class="fourbyfour" >
+<img alt="ride platform" src="https://programmingpixels.com/images/lowrezjam/rideplatform.gif" class="fourbyfour" >
+<img alt="crash land" src="https://programmingpixels.com/images/lowrezjam/crashland1.gif" class="fourbyfour" >
+<img alt="crash land" src="https://programmingpixels.com/images/lowrezjam/crashland2.gif" class="fourbyfour" ></p>
+<p>Other ways you can fail the level are:</p>
+<ul>
+<li>Any red border or wall will kill you if you make contact.</li>
+<li>Touching a platform with any part of your drone other than the bottom.</li>
+<li>Colliding with another drone.</li>
+</ul>
+<p><img alt="out of bounds" src="https://programmingpixels.com/images/lowrezjam/crashside.gif" class="fourbyfour" >
+<img alt="crash wall" src="https://programmingpixels.com/images/lowrezjam/crashwall.gif" class="fourbyfour" >
+<img alt="crash platform" src="https://programmingpixels.com/images/lowrezjam/crashsideplatform.gif" class="fourbyfour" >
+<img alt="crash enemy drone" src="https://programmingpixels.com/images/lowrezjam/crashenemydrone.gif" class="fourbyfour" ></p>
+<p>Your fuel bar is shown in purple at the bottom of the screen and when it runs out you'll lose control of the drone.</p>
+<p><img alt="logo" src="https://programmingpixels.com/images/lowrezjam/outoffuel.gif" class="twobytwo" ></p>
+<p>If you want to try the game yourself you can download it for free from <a href="https://programmingpixels.itch.io/drone-pilot-lowrezjam">itch</a>.</p>
+<h3>Brainstorming</h3>
+<p>Originally I decided to try and build a game where you had to land a space shuttle on a platform. I wanted to have classic asteroids style controls (that's rotation and thrust) but then also add in gravity. I tried knocking up a few ships in a sprite editor and quickly realised that with the limited number of pixels it would be impossible to have a rotating shuttle that looked like it was responding properly to controls. I decided I'd change the idea to controlling a drone which would have more limited controls (up, left and right but no rotation) and this would make the 'art' clearer as I could just use a few different sprites to indicate direction.</p>
+<h3>Step by step not giant leaps</h3>
+<p>In a local game jam I did earlier in the year I had absolutely nothing working until a few hours before the deadline- that turned out to be an extremely stressful development process. There were two main reasons why that happened: one of the team members turned out to be much less available than he hoped and it was the kind of game where nothing worked until everything did. We didn't build it by taking small steps but instead by trying to take one giant leap.</p>
+<p>I didn't want to build another game in this way and wanted to build a level based game where I could work on a feature, add it to a level and then move on to the next. Introducing a new game mechanic with each level.</p>
+<p>Making this game was quite a straight forward process, especially getting started because all I needed was a moving drone body in an empty screen.</p>
+<p>Rough order of development was:</p>
+<ol>
+<li>Platform collision.</li>
+<li>Kill zone at the edge of the screen.</li>
+<li>Kill drone if platform collision was too rough.</li>
+<li>Add new mechanic for the next level.</li>
+<li>Repeat 4.</li>
+</ol>
+<p>Often, the small games we make have a single concept or level idea. I wanted to try and make a game where I could experiment a bit with level design. I think you can see the iterative approach below, where each level only introduces one new mechanic. The gifs below are me completing each level in practice mode.</p>
+<p><img alt="level 1" src="https://programmingpixels.com/images/lowrezjam/lvl1.gif" class="threebythree" >
+<img alt="level 2" src="https://programmingpixels.com/images/lowrezjam/lvl2.gif" class="threebythree" >
+<img alt="level 3" src="https://programmingpixels.com/images/lowrezjam/lvl3.gif" class="threebythree" >
+<img alt="level 4" src="https://programmingpixels.com/images/lowrezjam/lvl4.gif" class="threebythree" >
+<img alt="level 5" src="https://programmingpixels.com/images/lowrezjam/lvl5.gif" class="threebythree" >
+<img alt="level 6" src="https://programmingpixels.com/images/lowrezjam/lvl6.gif" class="threebythree" >
+<img alt="level 7" src="https://programmingpixels.com/images/lowrezjam/lvl7.gif" class="threebythree" >
+<img alt="level 8" src="https://programmingpixels.com/images/lowrezjam/lvl8.gif" class="threebythree" >
+<img alt="blog logo" src="https://programmingpixels.com/images/logo.png" class="threebythree" ></p>
+<p>Unfortunately in the end I just couldn't get it all wrapped up and submitted by the deadline with adequate instructions and bug free gameplay (in particular, riding moving platforms turned out to be a pain). I am pleased with the end result and getting to experiment with level design on a short project like this was a lot of fun. Usually with jams like this it can be tempting to focus on a single gameplay element and level.</p>
+<p>The limited resolution posed an interesting problem, how to communicate information to the player in a clear but unobtrusive way and I had to quickly throw away the idea of having a 'proper HUD' for the drone.</p>
+<p>It would have been really nice to do more than 8 levels and I had a lot of ideas for other mechanics I could add to the game but once I realised I'd missed the deadline it ruined my motivation to really do something bigger with the project.</p>
+<p>If you want to try the game yourself you can download it for free from <a href="https://programmingpixels.itch.io/drone-pilot-lowrezjam">itch</a>.</p>
+	<br />
+	</div>
+
+	<div id="mailerlite" class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
+	</div>
+	<div id="mailerlite-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our newsletter signup form.
+			If you would like to signup you can send an email to danny@programmingpixels.com.
+			We will only ever send you updates of our latest blog posts and your data will never be shared with anyone, ever.
+		</p>
+	</div>
+	<div>
+	</div>
+	<br />
+
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="https://programmingpixels.com/theme/scripts/external_element_checks.js"></script>
+		</div>
+	</body>
+</html>
