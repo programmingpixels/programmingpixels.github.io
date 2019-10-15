@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/danny.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	
+	<!-- MailerLite Universal -->
+	<script>
+	(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+	var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+	f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+	var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+	_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+	
+	var ml_account = ml('accounts', '1598442', 'z5g7y5g5j2', 'load');
+	</script>
+	<!-- End MailerLite Universal -->
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">Fly Everything devlog #0</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Tue 15 October 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>Starting development on a mobile game</p></p>
+	</div>
+	<div>
+		<p class="tetradic2">
+				A quick play through of 'Drone Pilot', a game made for the lowrez game jam 2019.
+		</p>
+	</div>
+	<div class="youtube-container">
+		<iframe class="youtube" src="https://www.youtube.com/embed/KKIauAqVh04" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+	<div>
+	<p>Last month I had a lot of fun doing a game jam, you can read about the game and my experiences <a href="https://programmingpixels.com/drone-pilot-lowrezjam-2019.html">here</a>. I decided to take the concept and turn it into a full-blown mobile game. I'll be doing devlogs here but they'll probably lag a little behind my <a href="https://twitter.com/prog_pixels">twitter</a> where it's easier to post short updates so follow me on there if you want to keep up to date with the latest developments.</p>
+<p>Before diving into mobile development, I decided to go back and add an extra 'final' level to the prototype. The whole game is completely free to download for windows and linux on <a href="https://programmingpixels.itch.io/drone-pilot-lowrezjam">itch</a>.</p>
+<p><img alt="safe landing" src="https://programmingpixels.com/images/dronedevlog0/lvl9.gif" class="twobytwo" ></p>
+<h2>Just publish it to mobile stores then</h2>
+<p>Unfortunately the support for getting pygame applications onto mobile platforms is limited. There are libraries out there that would help get it onto android but from what I've read support for ios is lacking. Pygame is a great tool and obviously by using it you have the power of python and its extensive collection of 3rd party libraries. In this case though building a small game targeting mobile first, it seems like <a href="https://godotengine.org/">Godot</a> would be a much more sensible choice. It has a lot of built in support for deployments to mobile platforms and rebuilding what I've already done in python will only take a few days.</p>
+<h2>It's pretty small even for a mobile game</h2>
+<p>I haven't created a game for mobile for quite a few years so it'll be good to get the ball rolling again with something small but I do have a number of improvements in mind. Firstly, the working title is 'Fly Everything'- I want to include three or four aircraft types (like stunt planes and space shuttles) including my original drones. A rough wishlist looks like:</p>
+<ul>
+<li>More aircraft types.</li>
+<li>Improved artwork and animations.</li>
+<li>Higher resolutions than 64x64.</li>
+<li>At least 10 levels for each aircraft type.</li>
+<li>Larger levels so that the camera will have to move to follow your aircraft.</li>
+<li>Many more obstacle types.</li>
+<li>A choice of intuitive touch screen control methods.</li>
+</ul>
+<h2>When</h2>
+<p>It's not a huge project and even though I'm going to improve the artwork, I'll be keeping it quite basic. The target for release is November 2019.</p>
+	<br />
+	</div>
+
+	<div id="mailerlite" class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
+	</div>
+	<div id="mailerlite-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our newsletter signup form.
+			If you would like to signup you can send an email to danny@programmingpixels.com.
+			We will only ever send you updates of our latest blog posts and your data will never be shared with anyone, ever.
+		</p>
+	</div>
+	<div>
+	</div>
+	<br />
+
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="https://programmingpixels.com/theme/scripts/external_element_checks.js"></script>
+		</div>
+	</body>
+</html>
