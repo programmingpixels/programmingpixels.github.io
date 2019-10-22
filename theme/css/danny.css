@@ -50,6 +50,10 @@ iframe.youtube{
 pre{
     overflow: auto;
 }
+.onebyone{
+    max-width: 100%;
+    display: inline;
+}
 .threebythree{
     max-width: 32%;
     display: inline;
@@ -61,4 +65,7 @@ pre{
 .fourbyfour{
     max-width: 24%;
     display: inline;
+}
+.videoborder{
+    border: #333 solid 3px;
 }
