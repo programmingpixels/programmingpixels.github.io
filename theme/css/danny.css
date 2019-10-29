@@ -69,3 +69,6 @@ pre{
 .videoborder{
     border: #333 solid 3px;
 }
+video{
+    margin: 0 0 1rem
+}

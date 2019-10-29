@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>Programming Pixels</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/pixelsquare/style.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/danny.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://programmingpixels.com/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+	
+	<!-- MailerLite Universal -->
+	<script>
+	(function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+	var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+	f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+	var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+	_.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+	
+	var ml_account = ml('accounts', '1598442', 'z5g7y5g5j2', 'load');
+	</script>
+	<!-- End MailerLite Universal -->
+	</head>
+
+	<body class="theme-base-0d">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://programmingpixels.com/theme/images/sidebar/dark.png">
+					Programming Pixels
+				</a>
+			</h1>
+			<p class="lead">A blog about making games, Python and Godot. </p>
+			<p></p>
+		</div>
+		<nav class="sidebar-nav">
+			<a class="sidebar-nav-item" href="https://twitter.com/prog_pixels">
+				<i class="fa fa-twitter"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://www.youtube.com/channel/UCA52UIysqTUBT8-D1N8_8KA">
+				<i class="fa fa-youtube"></i>
+			</a>
+			<a class="sidebar-nav-item" href="feeds/all.atom.xml">
+				<i class="fa fa-feed"></i>
+			</a>
+			<a class="sidebar-nav-item" href="https://github.com/programmingpixels">
+				<i class="fa fa-github"></i>
+			</a>
+		</nav>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">Fly Everything devlog #2 - Control schemes</h1>
+	<p class="post-date">
+		<span>Published by </span>
+		<a href="https://programmingpixels.com/pages/about.html">Danny Barthaud</a>
+		<span> on </span>
+		<span>Tue 29 October 2019.</span>
+	</p>
+	
+	<div>
+		<p class="summary"><p>Adding obstacles, goals and camera work.</p></p>
+	</div>
+	<div>
+	<p>The previous devlog is available <a href="https://programmingpixels.com/fly-everything-devlog-1-control-schemes.html">here</a></p>
+<p>I started trying to add more object types to the game as well as a very basic menu system that would be useful for testing during development. Like the prototype, touching anything other than platforms will kill the drone, there's a large orange barrier in the centre of the level and I fenced the whole screen in with a kill barrier around the edge.</p>
+<video alt="basic video" class="videoborder onebyone" autoplay loop >
+  <source src="https://programmingpixels.com/images/dronedevlog2/general barrier, edge barrier and basic menu.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<p>One of the key differences I wanted between this and the game jam game that inspired it was larger levels. To accomplish that I'd need to have a camera able to follow the drone around a larger level. The game is supposed to have more of a problem solving feel than an action/ adventure title so I made a little camera zoom intro that shows the player the whole level before they start.</p>
+<video alt="more advanced video" class="videoborder onebyone" autoplay loop >
+  <source src="https://programmingpixels.com/images/dronedevlog2/moving camera and moving platforms.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+<p>Moving platforms seem to be working correctly now but they were a real pain again. The theory sounds simple, when the drone lands on the platform, move the drone with platform.</p>
+<p>I may make a godot tutorial in the future to cover moving platforms because it doesn't seem to be a well covered topic. I have a few added complications here that I think most games don't have to deal with:</p>
+<ul>
+<li>Platforms can move in any direction.</li>
+<li>It's only safe for the drone's feet to touch the platform. If any other part of the drone touches it then the drone is considered to have crashed.</li>
+<li>Making contact with only one foot is considered a crash.</li>
+</ul>
+	<br />
+	</div>
+
+	<div id="mailerlite" class="ml-form-embed" data-account="1598442:z5g7y5g5j2" data-form="1415584:m8n4j9">
+	</div>
+	<div id="mailerlite-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our newsletter signup form.
+			If you would like to signup you can send an email to danny@programmingpixels.com.
+			We will only ever send you updates of our latest blog posts and your data will never be shared with anyone, ever.
+		</p>
+	</div>
+	<div>
+	</div>
+	<br />
+
+	<div id="commento"></div>
+	<script src="https://cdn.commento.io/js/commento.js"></script>
+	<div id="commento-failed" class="hidden tetradic1">
+		<p>It looks as though something is blocking our comments system.
+			Comments on this site are powered by the lightweight, privacy-focused commenting platform <a title="Commento has not, does not, and will not gather your personal information to sell to advertisers, third-party trackers, or other organisations." href="https://commento.io/">commento</a>.
+		</p>
+	</div>
+</div>
+
+<script src="https://programmingpixels.com/theme/scripts/external_element_checks.js"></script>
+		</div>
+	</body>
+</html>
